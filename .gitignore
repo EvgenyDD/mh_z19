@@ -50,3 +50,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+soft/mh_z19/build/ctrl
+soft/mh_z19/build/ctrl.bin
+soft/bootloader/build/boot
+soft/bootloader/build/boot.bin
