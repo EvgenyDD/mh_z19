@@ -1,5 +1,6 @@
 #include "adc.h"
 #include "debug.h"
+#include "dht22.h"
 #include "display.h"
 #include "flash.h"
 #include "helper.h"
@@ -42,11 +43,16 @@ void init(void)
     display_init();
     screen_init();
 
+    
+
     screen_upd_temperature(256);
     screen_upd_humidity(56);
 
     mh_z19_init();
+    dht22_init();
 }
+
+int sts_dht = DHT11_NO_CONN;
 
 void loop(void)
 {
@@ -59,10 +65,14 @@ void loop(void)
     time_ms_prev = time_ms_now;
 
     static uint32_t prev_tick = 0;
+    static uint32_t poll2tick = 0;
 
     if(prev_tick < HAL_GetTick())
     {
         prev_tick = HAL_GetTick() + 500;
+        poll2tick = HAL_GetTick() + 30;
+        uint8_t buf[5];
+        sts_dht = dht11_poll(buf);
         // LED_GPIO_Port->ODR ^= LED_Pin;
 
         static uint32_t temp = 0;
@@ -72,6 +82,21 @@ void loop(void)
 
         //
         // screen_upd_humidity(hum);
+        if(sts_dht == DHT11_OK)
+        {
+            screen_upd_humidity(buf[0]);
+            screen_upd_temperature(buf[2] * 10);
+        }
+        else if(sts_dht == DHT11_CS_ERROR)
+            screen_upd_humidity(1);
+        else if(sts_dht == DHT11_NO_CONN)
+            screen_upd_humidity(2);
+    }
+
+    if(poll2tick && poll2tick < HAL_GetTick())
+    {
+        poll2tick = 0;
+        dht11_poll2();
     }
 
     mh_z19_poll(diff_ms);
@@ -91,7 +116,7 @@ void loop(void)
         screen_upd_co2_fail();
     else
         screen_upd_co2(mx_z19_get_co2());
-    screen_upd_temperature(mx_z19_get_temp() * 10);
+    // screen_upd_temperature(mx_z19_get_temp() * 10);
 
     // int32_t lvl = (prev_tick - HAL_GetTick());
     // float v = interval_hit_dim(lvl, 0, 500, 1000);

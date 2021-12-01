@@ -20,6 +20,7 @@ static uint8_t resp[32];
 void mh_z19_init(void)
 {
     // HAL_UART_IRQHandler(&huart2);
+    
     HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
     USART2->CR1 |= 1 << 5;
     // USART2->CR1 &= ~(uint32_t)(1 << 6);
@@ -56,7 +57,7 @@ void mh_z19_poll(uint32_t diff_ms)
 
 void USART2_IRQHandler(void)
 {
-    LED_GPIO_Port->ODR |= LED_Pin;
+    // LED_GPIO_Port->ODR |= LED_Pin;
 
     if(USART2->ISR & USART_ISR_RXNE)
     {
@@ -89,7 +90,7 @@ void USART2_IRQHandler(void)
     }
 
     // HAL_UART_IRQHandler(&huart2);
-    LED_GPIO_Port->ODR &= ~(uint32_t)(LED_Pin);
+    // LED_GPIO_Port->ODR &= ~(uint32_t)(LED_Pin);
 }
 
 uint16_t mx_z19_get_co2(void) { return co2_now; }

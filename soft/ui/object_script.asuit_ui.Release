@@ -1,0 +1,11 @@
+release/serial.o
+release/impl.o
+release/miniz.o
+release/miniz_tdef.o
+release/miniz_tinfl.o
+release/miniz_zip.o
+release/mpfit.o
+release/main.o
+release/mainwindow.o
+release/asuit_protocol.o
+release/moc_mainwindow.o

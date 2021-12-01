@@ -1,0 +1,11 @@
+debug/serial.o
+debug/impl.o
+debug/miniz.o
+debug/miniz_tdef.o
+debug/miniz_tinfl.o
+debug/miniz_zip.o
+debug/mpfit.o
+debug/main.o
+debug/mainwindow.o
+debug/asuit_protocol.o
+debug/moc_mainwindow.o
