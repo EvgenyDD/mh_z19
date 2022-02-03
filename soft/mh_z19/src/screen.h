@@ -23,7 +23,7 @@ void screen_set_num(uint32_t screen, uint32_t digit, uint8_t num);
 void screen_set_dot(uint32_t screen, uint32_t digit, bool state);
 
 void screen_upd_co2(uint32_t value);
-void screen_upd_co2_fail();
+void screen_upd_co2_fail(void);
 void screen_upd_temperature(uint32_t value /* 0.1 Celsius quant */);
 void screen_upd_humidity(uint8_t value);
 

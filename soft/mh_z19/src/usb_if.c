@@ -5,6 +5,8 @@
 // #include "serial_protocol.h"
 // #include "usbd_cdc_if.h"
 
+void x(void){}
+
 // #include <stdbool.h>
 // #include <stdint.h>
 

@@ -22,7 +22,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-extern void init(void);
 extern void loop(void);
 /* USER CODE END Includes */
 
@@ -113,7 +112,6 @@ int main(void)
   MX_TIM15_Init();
   MX_CRC_Init();
   /* USER CODE BEGIN 2 */
-init();
   /* USER CODE END 2 */
 
   /* Infinite loop */

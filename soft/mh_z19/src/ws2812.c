@@ -29,6 +29,7 @@ void ws2812_init(void)
         else
             tx_arr[i / 8] &= ~(1 << (i % 8));
     }
+    __HAL_SPI_ENABLE(&hspi2);
     color_t c = {0};
     c.b = 255;
     ws2812_set_color(&c);
