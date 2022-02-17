@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -111,6 +112,7 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM15_Init();
   MX_CRC_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   /* USER CODE END 2 */
 
@@ -164,9 +166,10 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1|RCC_PERIPHCLK_TIM15
-                              |RCC_PERIPHCLK_ADC1;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB|RCC_PERIPHCLK_I2C1
+                              |RCC_PERIPHCLK_TIM15|RCC_PERIPHCLK_ADC1;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
+  PeriphClkInit.USBClockSelection = RCC_USBCLKSOURCE_PLL;
   PeriphClkInit.Tim15ClockSelection = RCC_TIM15CLK_HCLK;
   PeriphClkInit.Adc1ClockSelection = RCC_ADC1PLLCLK_DIV1;
 
@@ -551,4 +554,3 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

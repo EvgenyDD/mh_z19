@@ -7,8 +7,8 @@
 #include "main.h"
 #include "mh_z19.h"
 #include "screen.h"
+#include "usbd_cdc_if.h"
 #include "ws2812.h"
-// #include "usbd_cdc_if.h"
 
 #include <math.h>
 #include <stdbool.h>
@@ -18,7 +18,7 @@ extern ADC_HandleTypeDef hadc1;
 extern DMA_HandleTypeDef hdma_adc1;
 extern CRC_HandleTypeDef hcrc;
 extern TIM_HandleTypeDef htim1;
-// extern USBD_HandleTypeDef hUsbDeviceFS;
+extern USBD_HandleTypeDef hUsbDeviceFS;
 
 int sts_dht = DHT11_NO_CONN;
 
@@ -120,6 +120,16 @@ void loop(void)
 
 		// if(hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) to_without_press = 0;
 	}
+}
+
+static void tx(uint8_t *buf, uint32_t len)
+{
+	CDC_Transmit_FS(buf, len);
+}
+
+void usb_if_rx(uint8_t *buf, uint32_t len)
+{
+	tx(buf, len);
 }
 
 inline static void memcpy_volatile(void *dst, const volatile void *src, size_t size)

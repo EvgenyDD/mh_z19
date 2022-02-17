@@ -70,7 +70,7 @@ CXXDIALECT = c++0x
 #
 #Optimization
 #
-OPT_LVL = 3
+OPT_LVL = 2
 
 #
 #Debug information options
@@ -141,15 +141,14 @@ INCDIR  += base/Drivers/STM32F3xx_HAL_Driver/Inc
 INCDIR  += base/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy 
 INCDIR  += base/Drivers/CMSIS/Device/ST/stm32f3xx/Include 
 INCDIR  += base/Drivers/CMSIS/Include
-# INCDIR  += base/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/
-# INCDIR  += base/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
+INCDIR  += base/Middlewares/ST/STM32_USB_Device_Library/Core/Inc/
+INCDIR  += base/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
 
 #
 #Source files
 #
 SOURCES += base/startup_stm32f302x8.s
 
-# SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_usb.c 
 SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal.c 
 SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_cortex.c 
 SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_adc.c 
@@ -173,22 +172,23 @@ SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_uart.c
 SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_uart_ex.c 
 SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_tim.c 
 SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_tim_ex.c 
+SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_usb.c 
 
-# SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pcd.c 
-# SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pcd_ex.c 
-# SOURCES += base/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
-# SOURCES += base/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
-# SOURCES += base/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
-# SOURCES += base/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pcd.c 
+SOURCES += base/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pcd_ex.c 
+SOURCES += base/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
+SOURCES += base/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
+SOURCES += base/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+SOURCES += base/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
 
 SOURCES += base/Src/main.c
 #SOURCES += base/Src/system_stm32f3xx.c
 SOURCES += base/Src/stm32f3xx_it.c
 SOURCES += base/Src/stm32f3xx_hal_msp.c
-# SOURCES += base/Src/usb_device.c
-# SOURCES += base/Src/usbd_cdc_if.c
-# SOURCES += base/Src/usbd_conf.c
-# SOURCES += base/Src/usbd_desc.c
+SOURCES += base/Src/usb_device.c
+SOURCES += base/Src/usbd_cdc_if.c
+SOURCES += base/Src/usbd_conf.c
+SOURCES += base/Src/usbd_desc.c
 
 
 SOURCES += $(wildcard src/*.c)
