@@ -1,10 +1,13 @@
 #include "config_system.h"
 #include "console.h"
 #include "crc.h"
+#include "display.h"
 #include "fw_header.h"
+#include "mh_z19.h"
 #include "platform.h"
 #include "prof.h"
 #include "ret_mem.h"
+#include "screen.h"
 #include "usb_core.h"
 #include "usb_core_cdc.h"
 #include "usb_hw.h"
@@ -55,12 +58,14 @@ void main(void)
 
 	usb_init();
 
-	PIN_SET(DIG_0);
-	PIN_RST(DIG_1);
-	PIN_SET(DIG_3);
+	display_init();
+	screen_init();
 
-	PIN_SET_(GPIOB, 1 << 7);
-	PIN_SET_(GPIOA, 1 << 13);
+	screen_upd_temperature(256);
+	screen_upd_humidity(0);
+
+	mh_z19_init();
+	// dht11_init();
 
 	for(;;)
 	{
@@ -78,11 +83,50 @@ void main(void)
 
 		usb_poll(diff_ms);
 
-		PIN_WR_(GPIOB, 1 << 3, usb_prop.bDeviceState != 1);
-		PIN_WR_(GPIOB, 1 << 7, usb_prop.bDeviceState != 2);
-		PIN_WR_(GPIOA, 1 << 9, usb_prop.bDeviceState != 3);
-		PIN_WR_(GPIOA, 1 << 10, usb_prop.bDeviceState != 4);
-		PIN_WR_(GPIOB, 1 << 4, usb_prop.bDeviceState != 5);
+		static uint32_t cnt = 0, cnt2 = 0;
+		cnt += diff_ms;
+		if(cnt > 500)
+		{
+			cnt = 0;
+			static uint8_t buf[5];
+			// sts_dht = dht11_poll(buf);
+
+			// if(sts_dht == DHT11_OK)
+			// {
+			// 	screen_upd_humidity(buf[0]);
+			// 	screen_upd_temperature(buf[2] * 10);
+			// }
+			// else if(sts_dht == DHT11_CS_ERROR)
+			// {
+			// 	screen_upd_humidity(1);
+			// }
+			// else if(sts_dht == DHT11_NO_CONN)
+			// {
+			// 	screen_upd_humidity(2);
+			// }
+		}
+
+		mh_z19_poll(diff_ms);
+
+		cnt2 += diff_ms;
+		if(cnt2 > 2)
+		{
+			cnt2 = 0;
+			// ws2812_set_color((color_t[]){hsv2rgb(map(mx_z19_get_co2(), 400, 900, 240, 360),
+			// 									 1,
+			// 									 map(mx_z19_get_co2(), 400, 900, 0, 60))});
+		}
+
+		screen_poll(diff_ms);
+
+		if(mx_z19_get_co2() == MH_Z19_INVALID_VALUE)
+		{
+			screen_upd_co2_fail();
+		}
+		else
+		{
+			screen_upd_co2(mx_z19_get_co2());
+		}
 	}
 }
 

@@ -35,6 +35,7 @@ PPDEFS += USE_STDPERIPH_DRIVER STM32F302x8 FW_TYPE=FW_APP CFG_SYSTEM_SAVES_NON_N
 # PPDEFS += USBD_CLASS_CDC
 PPDEFS += USBD_CLASS_COMPOSITE_DFU_CDC
 PPDEFS += DFU_READS_CFG_SECTION
+PPDEFS += HSE_VALUE=12000000
 
 INCDIR += app
 INCDIR += common
@@ -123,7 +124,7 @@ program: $(BINARY_SIGNED)
 	@usb_dfu_flasher w a $< MH-Z19
 
 ds:
-	openocd -d0 -f ../target/stm32f30x.cfg
+	openocd -d0 -f target/stm32f30x.cfg
 
 debug:
 	@set _NO_DEBUG_HEAP=1

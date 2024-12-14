@@ -1,8 +1,5 @@
 #include "debug.h"
 #include "main.h"
-// #include "usbd_cdc_if.h"
-
-#include <serial_protocol.h>
 
 #include <stdarg.h>
 #include <stdbool.h>
