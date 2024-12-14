@@ -58,3 +58,11 @@ soft/bootloader/build/boot.bin
 */History/
 */Project Logs*/
 debug.log
+
+build/
+.vscode
+.gdbinit
+*.user*
+*.Release
+*.Debug
+*.stashw
