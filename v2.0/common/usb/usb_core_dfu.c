@@ -30,13 +30,12 @@ extern bool g_stay_in_boot;
 #define ADDR_END ((uint32_t) & __ldr_end)
 #endif
 
-static uint32_t usbd_dfu_alt_set = 0;
 static uint32_t cnt_till_reset = 0;
 static uint8_t fw_sts[3], fw_type = FW_TYPE, fw_index_sel = 0;
 static volatile bool dl_pending = false;
 static bool dwnload_was = false;
 static uint16_t tgt_upload_len = 0;
-static uint32_t wBlockNum = 0, wlength = 0;
+static uint32_t wlength = 0;
 static uint8_t dfu_buffer[USBD_BUF_SZ];
 
 static struct
@@ -164,7 +163,7 @@ static uint8_t *cb_upload(uint16_t Length)
 
 static uint8_t *cb_download(uint16_t Length)
 {
-	// wBlockNum = (uint16_t)usb_dev.wValue.bw.bb1 * 0x100 + (uint16_t)usb_dev.wValue.bw.bb0;
+	// uint32_t wBlockNum = (uint16_t)usb_dev.wValue.bw.bb1 * 0x100 + (uint16_t)usb_dev.wValue.bw.bb0;
 	wlength = (uint16_t)usb_dev.wLength.bw.bb0 * 0x100 + (uint16_t)usb_dev.wLength.bw.bb1;
 	if(Length == 0) pInformation->ep_info.wLength = wlength;
 	return dfu_buffer + usb_dev.ep_info.wOffset;

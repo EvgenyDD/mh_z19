@@ -7,6 +7,7 @@ const uint32_t time_screen[SCREEN_COUNT] = {
 	4000, // SCREEN_CO2
 	1500, // SCREEN_TEMP
 	1500, // SCREEN_HUMIDITY
+	1500, // SCREEN_PRESSURE
 };
 
 const uint32_t time_half_transition = 220; // ms
@@ -19,6 +20,7 @@ void screen_init(void)
 {
 	screens[SCREEN_TEMP][0] = PATTRN_CHR_t;
 	screens[SCREEN_HUMIDITY][0] = PATTRN_CHR_h;
+	screens[SCREEN_PRESSURE][0] = PATTRN_CHR_P;
 }
 
 void screen_poll(uint32_t diff_ms)
@@ -83,8 +85,7 @@ static void screen_set_num_value(uint32_t screen, uint32_t value, uint32_t start
 void screen_upd_co2_fail(void)
 {
 	for(size_t i = 0; i < DIG_COUNT; i++)
-		// screen_set_symbol(SCREEN_CO2, i, PATTRN_CHR_MINUS);
-		screen_set_symbol(SCREEN_CO2, i, PATTRN_CHR_L);
+		screen_set_symbol(SCREEN_CO2, i, PATTRN_CHR_MINUS);
 }
 
 void screen_upd_co2(uint32_t value)
@@ -101,4 +102,9 @@ void screen_upd_temperature(uint32_t value /* 0.1 Celsius quant */) // minus???
 void screen_upd_humidity(uint8_t value)
 {
 	screen_set_num_value(SCREEN_HUMIDITY, value, 2, 2, 1);
+}
+
+void screen_upd_pressure(uint16_t value)
+{
+	screen_set_num_value(SCREEN_PRESSURE, value, 1, 3, 0);
 }

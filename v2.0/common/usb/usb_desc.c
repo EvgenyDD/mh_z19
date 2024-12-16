@@ -4,6 +4,7 @@
 #include "usb_lib.h"
 
 #if defined(USBD_CLASS_COMPOSITE_DFU_CDC)
+// #define USE_STD_LIB_GEN
 #include "md5.h"
 #endif
 
@@ -73,14 +74,16 @@ uint8_t usbd_lang_id_desc[USB_LEN_LANGID_DESC] = {
 };
 
 #if defined(USBD_CLASS_COMPOSITE_DFU_CDC)
-struct
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpacked"
+struct __packed
 {
 	uint8_t bLength;
 	uint8_t bDescriptorType;
 	uint16_t wData[7];
 	uint8_t bVendorCode;
 	uint8_t bPadding;
-} usbd_os_str_desc __packed = {
+} usbd_os_str_desc = {
 	sizeof(usbd_os_str_desc),
 	USB_DESC_TYPE_STRING,
 	u"MSFT100",
@@ -88,7 +91,7 @@ struct
 	0,
 };
 
-struct
+struct __packed
 {
 	// Header
 	uint32_t dwLength;
@@ -102,7 +105,7 @@ struct
 	uint8_t bCompatibleID[8];
 	uint8_t bSubCompatibleID[8];
 	uint8_t bReserved3[6];
-} usbd_compat_id_desc __packed = {
+} usbd_compat_id_desc = {
 	sizeof(usbd_compat_id_desc),
 	WINUSB_BCD_VERSION,
 	WINUSB_REQ_GET_COMPATIBLE_ID_FEATURE_DESCRIPTOR, // wIndex
@@ -115,8 +118,6 @@ struct
 	{0},											 // bReserved3
 };
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpacked"
 struct winusb_ext_prop_desc_hdr
 {
 	// header
@@ -480,10 +481,10 @@ uint8_t *usbd_get_str_desc(uint16_t Length)
 	{
 	case USBD_IDX_LANGID_STR: return Standard_GetDescriptorData(Length, usbd_lang_id_desc, sizeof(usbd_lang_id_desc));
 	case USBD_IDX_MFC_STR:
-		USBD_GetString(USBD_MANUFACTURER_STRING, usbd_str_desc_buf, &len);
+		USBD_GetString((const uint8_t *)USBD_MANUFACTURER_STRING, usbd_str_desc_buf, &len);
 		return Standard_GetDescriptorData(Length, usbd_str_desc_buf, len);
 	case USBD_IDX_PRODUCT_STR:
-		USBD_GetString(USBD_PRODUCT_STRING, usbd_str_desc_buf, &len);
+		USBD_GetString((const uint8_t *)USBD_PRODUCT_STRING, usbd_str_desc_buf, &len);
 		return Standard_GetDescriptorData(Length, usbd_str_desc_buf, len);
 	case USBD_IDX_SERIAL_STR:
 	{
@@ -498,13 +499,13 @@ uint8_t *usbd_get_str_desc(uint16_t Length)
 		return Standard_GetDescriptorData(Length, usbd_str_serial, p);
 	}
 	case USBD_IDX_CONFIG_STR:
-		USBD_GetString(USBD_CONFIGURATION_STRING, usbd_str_desc_buf, &len);
+		USBD_GetString((const uint8_t *)USBD_CONFIGURATION_STRING, usbd_str_desc_buf, &len);
 		return Standard_GetDescriptorData(Length, usbd_str_desc_buf, len);
 	case USBD_IDX_INTERFACE_STR:
-		USBD_GetString(USBD_INTERFACE_STRING, usbd_str_desc_buf, &len);
+		USBD_GetString((const uint8_t *)USBD_INTERFACE_STRING, usbd_str_desc_buf, &len);
 		return Standard_GetDescriptorData(Length, usbd_str_desc_buf, len);
 	case USBD_IDX_INTERFACE_STR + 1:
-		USBD_GetString(USBD_DFU_STRING, usbd_str_desc_buf, &len);
+		USBD_GetString((const uint8_t *)USBD_DFU_STRING, usbd_str_desc_buf, &len);
 		return Standard_GetDescriptorData(Length, usbd_str_desc_buf, len);
 	case USBD_IDX_OS_STR:
 #if defined(USBD_CLASS_COMPOSITE_DFU_CDC)
@@ -516,17 +517,19 @@ uint8_t *usbd_get_str_desc(uint16_t Length)
 	}
 }
 
+#if defined(USBD_CLASS_COMPOSITE_DFU_CDC) && defined(USE_STD_LIB_GEN)
 static uint8_t hex2ch(uint8_t num) { return num > 9 ? num - 10 + 'A' : num + '0'; }
+#endif
 
 void usdb_desc_init(void)
 {
 #if defined(USBD_CLASS_COMPOSITE_DFU_CDC)
 	// Generate GUID by PID/VID/NAME/SERIAL
-#if 1
+#ifndef USE_STD_LIB_GEN
 	uint8_t buf[64], hash[16];
-	int len = snprintf(buf, sizeof(buf), "USB\\VID_%04X&PID_%04X\\%s_%08lX%08lX%08lX", USBD_VID, USBD_PID, DEV, g_uid[0], g_uid[1], g_uid[2]);
+	int len = snprintf((char *)buf, sizeof(buf), "USB\\VID_%04X&PID_%04X\\%s_%08lX%08lX%08lX", USBD_VID, USBD_PID, DEV, g_uid[0], g_uid[1], g_uid[2]);
 	md5_data(buf, len, hash);
-	len = snprintf(buf, sizeof(buf), "{%02X%02X%02X%02X-%02X%02X-3%X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X}", // RFC9562 - Type 3
+	len = snprintf((char *)buf, sizeof(buf), "{%02X%02X%02X%02X-%02X%02X-3%X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X}", // RFC9562 - Type 3
 				   hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6] & 0xF, hash[7],
 				   0x80 | (hash[8] & 0x3F), hash[9], hash[10], hash[11], hash[12], hash[13], hash[14], hash[15]);
 	for(int i = 0; i < len && i < (int)(sizeof(usbd_winusb_ex_prop_desc.features[0].bPropertyData) / sizeof(usbd_winusb_ex_prop_desc.features[0].bPropertyData[0])); i++)

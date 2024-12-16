@@ -38,6 +38,9 @@
 #define DIG_3_Port GPIOB
 #define DIG_3_Pin GPIO_Pin_12
 
+#define DHT_Port GPIOA
+#define DHT_Pin GPIO_Pin_4
+
 void platform_flash_erase_flag_reset(void);
 void platform_flash_erase_flag_reset_sect_cfg(void);
 

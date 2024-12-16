@@ -104,16 +104,16 @@ $(EXT_MAKE_TARGETS):
 #####################
 
 flash: $(BINARY_SIGNED)
-	openocd -d0 -f ../target/stm32f30x.cfg -c "program $< 0x08001000 verify reset exit" 
+	@openocd -d0 -f ../target/stm32f30x.cfg -c "program $< 0x08001000 verify reset exit" 
 
 flash_all: $(BINARY_MERGED)
-	openocd -d0 -f ../target/stm32f30x.cfg -c "program $< 0x08000000 verify reset exit" 
+	@openocd -d0 -f ../target/stm32f30x.cfg -c "program $< 0x08000000 verify reset exit" 
 
 program: $(BINARY_SIGNED)
 	@usb_dfu_flasher w b $< MH-Z19
 
 ds:
-	openocd -d0 -f ../target/stm32f30x.cfg
+	@openocd -d0 -f ../target/stm32f30x.cfg
 
 debug:
 	@set _NO_DEBUG_HEAP=1

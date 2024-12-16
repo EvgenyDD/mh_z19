@@ -31,8 +31,6 @@ LDFLAGS  += -Wl,--print-memory-usage
 EXT_LIBS +=c m nosys
 
 PPDEFS += USE_STDPERIPH_DRIVER STM32F302x8 FW_TYPE=FW_APP CFG_SYSTEM_SAVES_NON_NATIVE_DATA=1 DEV=\"MH-Z19\"
-# PPDEFS += USBD_CLASS_DFU
-# PPDEFS += USBD_CLASS_CDC
 PPDEFS += USBD_CLASS_COMPOSITE_DFU_CDC
 PPDEFS += DFU_READS_CFG_SECTION
 PPDEFS += HSE_VALUE=12000000
@@ -115,16 +113,16 @@ clean_ext_targets:
 #####################
 
 flash: $(BINARY_SIGNED)
-	@openocd -f target/stm32f30x.cfg -c "program $(BINARY_SIGNED) 0x08050000 verify reset exit" 
+	@openocd -d0 -f target/stm32f30x.cfg -c "program $(BINARY_SIGNED) 0x08050000 verify reset exit" 
 
 flash_all: $(BINARY_MERGED)
-	@openocd -f target/stm32f30x.cfg -c "program $(BINARY_MERGED) 0x08000000 verify reset exit"
+	@openocd -d0 -f target/stm32f30x.cfg -c "program $(BINARY_MERGED) 0x08000000 verify reset exit"
 
 program: $(BINARY_SIGNED)
 	@usb_dfu_flasher w a $< MH-Z19
 
 ds:
-	openocd -d0 -f target/stm32f30x.cfg
+	@openocd -d0 -f target/stm32f30x.cfg
 
 debug:
 	@set _NO_DEBUG_HEAP=1

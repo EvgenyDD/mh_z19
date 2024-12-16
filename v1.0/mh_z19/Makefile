@@ -204,14 +204,3 @@ include core.mk
 .PHONY : tags
 tags:
 	ctags -R $(SOURCES) $(INCDIR) 
-
-# ds:
-# 	openocd -d0 -f target/stm32f30x.cfg
-
-# debug:
-# 	@set _NO_DEBUG_HEAP=1
-# 	@echo "file build/ctrl" > .gdbinit
-# 	@echo "set auto-load safe-path /" >> .gdbinit
-# 	@echo "set confirm off" >> .gdbinit
-# 	@echo "target extended-remote :3333" >> .gdbinit
-# 	@arm-none-eabi-gdb -q -x .gdbinit

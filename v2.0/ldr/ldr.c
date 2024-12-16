@@ -1,4 +1,5 @@
 #include "crc.h"
+#include "display.h"
 #include "fw_header.h"
 #include "platform.h"
 #include "prof.h"
@@ -27,8 +28,7 @@ void delay_ms(volatile uint32_t delay_ms)
 	for(;;)
 	{
 		start += (uint32_t)prof_mark(&mark_prev);
-		if(start >= time_limit)
-			return;
+		if(start >= time_limit) return;
 	}
 }
 
@@ -42,6 +42,7 @@ void main(void)
 	platform_watchdog_init();
 
 	platform_init();
+	display_init();
 
 	fw_header_check_all();
 
@@ -56,7 +57,7 @@ void main(void)
 	{
 		uint32_t time_diff_systick = (uint32_t)prof_mark(&prev_systick);
 
-		static uint32_t remain_systick_us_prev = 0, remain_systick_ms_prev = 0;
+		static uint32_t /*remain_systick_us_prev = 0,*/ remain_systick_ms_prev = 0;
 		// uint32_t diff_us = (time_diff_systick + remain_systick_us_prev) / (SYSTICK_IN_US);
 		// remain_systick_us_prev = (time_diff_systick + remain_systick_us_prev) % SYSTICK_IN_US;
 

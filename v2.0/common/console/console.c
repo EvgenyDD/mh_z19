@@ -5,6 +5,8 @@
 #include <stdarg.h>
 #include <string.h>
 
+#define REQ_SIZE 256
+
 static char print_buf[512];
 
 void _console_print(const char *fmt, ...)
@@ -15,12 +17,12 @@ void _console_print(const char *fmt, ...)
 	int act_len = vsnprintf(print_buf, sizeof(print_buf) - 1, fmt, ap);
 	va_end(ap);
 
-	usbd_cdc_push_data(print_buf, act_len);
+	usbd_cdc_push_data((uint8_t *)print_buf, act_len);
 }
 
 void _console_print_prefix(void) { _console_print("[" DT_FMT_MS "]:", DT_DATA_MS(system_time_ms)); }
 
-void console_str(const char *str) { usbd_cdc_push_data(str, strlen(str)); }
+void console_str(const char *str) { usbd_cdc_push_data((const uint8_t *)str, strlen(str)); }
 
 /////////////////////////////////////////////////////
 
@@ -31,9 +33,13 @@ static int prev_request_len = 0;
 
 void console_set_error_string(const char *str) { error_str = str; }
 
-void console_cb(char *data, uint32_t len)
+void console_cb(const char *_data, uint32_t len)
 {
-	data[len] = 0;
+	if(len > REQ_SIZE) return;
+	uint8_t data_array[REQ_SIZE + 1];
+	uint8_t *data = data_array;
+	memcpy(data_array, _data, len);
+	data_array[len] = 0;
 	if(len >= sizeof(prev_request)) return;
 
 	uint16_t len_req = len;
@@ -68,8 +74,9 @@ void console_cb(char *data, uint32_t len)
 				uint16_t l = strlen(console_cmd[i].name);
 				if(strncmp((char *)data, (const char *)console_cmd[i].name, l) == 0)
 				{
-					const char *param = (len_req - l) > 0 ? data + l : 0;
-					int error_code = console_cmd[i].cb(param, len_req - l);
+					const char *param = (len_req - l) > 0 ? (const char *)(data + l) : 0;
+					int error_code = CON_CB_SILENT;
+					console_cmd[i].cb(param, len_req - l, &error_code);
 					if(error_code > CON_CB_SILENT)
 					{
 						_console_print("Error: ");

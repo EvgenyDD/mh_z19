@@ -3,11 +3,11 @@
 
 #include <stdint.h>
 
-#define DT_FMT_MS "%03d.%03d"
+#define DT_FMT_MS "%03ld.%03ld"
 #define DT_DATA_MS(x) ((x) / 1000U), ((x) % 1000U)
 
 void console_str(const char *str);
-void _console_print(const char *fmt, ...);
+void _console_print(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 void _console_print_prefix(void);
 
 #define console_print(...)           \
@@ -16,7 +16,7 @@ void _console_print_prefix(void);
 		_console_print(__VA_ARGS__); \
 	}
 
-void console_cb(char *data, uint32_t len);
+void console_cb(const char *data, uint32_t len);
 void console_set_error_string(const char *str);
 
 typedef enum
@@ -30,7 +30,7 @@ typedef enum
 	CON_CB_ERR_NO_SPACE,
 } console_cmd_cb_res_t;
 
-typedef int (*console_cmd_cb_t)(const char *, int);
+typedef void (*console_cmd_cb_t)(const char *, int, int *);
 
 typedef struct
 {

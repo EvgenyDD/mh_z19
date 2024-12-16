@@ -21,7 +21,6 @@ enum
 	USB_CDC_ZLP
 };
 
-static uint8_t cdc_cmd_buf[CDC_CMD_PACKET_SIZE];
 static uint8_t cdc_rx_buf[CDC_DATA_MAX_PACKET_SIZE]; // CDC ->app
 static uint8_t cdc_tx_buf[APP_RX_DATA_SIZE];
 static uint32_t cdc_tx_buf_len = 0;

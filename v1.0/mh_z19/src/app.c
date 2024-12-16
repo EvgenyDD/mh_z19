@@ -20,8 +20,6 @@ extern CRC_HandleTypeDef hcrc;
 extern TIM_HandleTypeDef htim1;
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-int sts_dht = DHT11_NO_CONN;
-
 static inline int map(int x, int in_min, int in_max, int out_min, int out_max)
 {
 	if(x < in_min)
@@ -75,7 +73,7 @@ void loop(void)
 		{
 			prev_tick = HAL_GetTick() + 500;
 			static uint8_t buf[5];
-			sts_dht = dht11_poll(buf);
+			int sts_dht = dht11_poll(buf);
 
 			if(sts_dht == DHT11_OK)
 			{

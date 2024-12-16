@@ -1,16 +1,17 @@
-#ifndef SCREEN_H
-#define SCREEN_H
+#ifndef SCREEN_H__
+#define SCREEN_H__
 
 #include <stdbool.h>
 #include <stdint.h>
 
 enum
 {
-    SCREEN_CO2,      // prefix:
-    SCREEN_TEMP,     // prefix: t
-    SCREEN_HUMIDITY, // prefix: h
+	SCREEN_CO2,		 // prefix:
+	SCREEN_TEMP,	 // prefix: t
+	SCREEN_HUMIDITY, // prefix: h
+	SCREEN_PRESSURE, // prefix: p
 
-    SCREEN_COUNT,
+	SCREEN_COUNT,
 };
 
 void screen_init(void);
@@ -26,5 +27,6 @@ void screen_upd_co2(uint32_t value);
 void screen_upd_co2_fail(void);
 void screen_upd_temperature(uint32_t value /* 0.1 Celsius quant */);
 void screen_upd_humidity(uint8_t value);
+void screen_upd_pressure(uint16_t value);
 
-#endif // SCREEN_H
+#endif // SCREEN_H__

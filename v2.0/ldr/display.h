@@ -43,12 +43,4 @@
 
 void display_init(void);
 
-void display_set_pwm(uint32_t digit, float level);
-void display_reset(uint32_t digit);
-void display_set_num(uint32_t digit, uint8_t num);
-void display_set_symbol(uint32_t digit, uint32_t symbol);
-void display_set_dot(uint32_t digit, bool state);
-
-extern const uint32_t pattrn_dig[10];
-
 #endif // DISPLAY_H__

@@ -13,7 +13,6 @@ static volatile uint16_t temp = 100;
 static volatile uint16_t co2_irq = 0;
 
 static uint8_t request[] = {0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};
-static uint8_t resp[32];
 
 void USART2_IRQHandler(void);
 
@@ -42,7 +41,6 @@ void mh_z19_init(void)
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 	USART_Init(USART2, &USART_InitStructure);
 	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
-	USART_ITConfig(USART2, USART_IT_ORE, ENABLE);
 	USART_Cmd(USART2, ENABLE);
 
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -71,17 +69,15 @@ void mh_z19_init(void)
 	USART_Cmd(USART2, ENABLE);
 }
 
-static void uart_tx(const uint8_t *data, uint32_t len)
-{
-	for(uint32_t i = 0; i < len; i++)
-	{
-		while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET)
-			;
-		USART_SendData(USART2, data[i]);
-	}
-}
-
-#include "console.h"
+// static void uart_tx(const uint8_t *data, uint32_t len)
+// {
+// 	for(uint32_t i = 0; i < len; i++)
+// 	{
+// 		while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET)
+// 			;
+// 		USART_SendData(USART2, data[i]);
+// 	}
+// }
 
 void mh_z19_poll(uint32_t diff_ms)
 {
@@ -90,11 +86,6 @@ void mh_z19_poll(uint32_t diff_ms)
 	{
 		rx_flag = true;
 		tim_upd = 0;
-
-		if(rx_cnt != 0)
-		{
-			console_print("rxcnt :%d\n", rx_cnt);
-		}
 		rx_cnt = 0;
 
 		DMA_Cmd(DMA1_Channel7, DISABLE);
@@ -136,11 +127,6 @@ void USART2_IRQHandler(void)
 			temp = x;
 		}
 		rx_cnt++;
-	}
-	if(USART2->ISR & USART_ISR_ORE)
-	{
-		USART2->ICR |= USART_ICR_ORECF;
-		rx_cnt = 0;
 	}
 }
 
